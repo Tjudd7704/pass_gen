@@ -2,6 +2,8 @@ import argparse
 import zxcvbn
 import statistics
 from tqdm import tqdm
+import matplotlib
+matplotlib.use('TkAgg') 
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -38,10 +40,10 @@ def calculate_password_statistics(input_file, ax, label):
 
     sns.histplot(scores, bins=[-0.5, 0.5, 1.5, 2.5, 3.5, 4.5], kde=False, ax=ax, label=label)
     ax.set_xticks(range(5))
-    ax.set_xticklabels(["Very Weak", "Weak", "Fair", "Good", "Strong"])
+    ax.set_xticklabels(["Very\nWeak", "Weak", "Fair", "Good", "Strong"])
     ax.set_xlabel("zxcvbn Strength Score")
     ax.set_ylabel("Number of Passwords")
-    ax.set_title(f"Password Strength Distribution ({label})")
+    ax.set_title(f"Password Strength Distribution\n({label})")
     ax.legend()
 
 def calculate_unique_passwords(input_file, ax, label):
@@ -57,7 +59,7 @@ def calculate_unique_passwords(input_file, ax, label):
     duplicate_passwords = len(passwords) - unique_passwords
 
     ax.pie([unique_passwords, duplicate_passwords], labels=["Unique", "Duplicate"], autopct="%1.1f%%", colors=["green", "red"])
-    ax.set_title(f"Uniqueness of Passwords ({label})")
+    ax.set_title(f"Uniqueness of Passwords\n({label})")
 
 def calculate_password_characteristics(input_file, ax, label):
     """
@@ -77,30 +79,33 @@ def calculate_password_characteristics(input_file, ax, label):
     counts = [digit_count, upper_count, special_count]
     ax.bar(categories, counts, label=label)
     ax.set_ylabel("Number of Passwords")
-    ax.set_title(f"Character Type Distribution ({label})")
+    ax.set_title(f"Character Type Distribution\n({label})")
     ax.legend()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Analyze generated passwords.")
     parser.add_argument("--input_files", nargs="+", type=str, help="Paths to the input files containing generated passwords")
     parser.add_argument("--labels", nargs="+", type=str, help="Labels for each input file")
+
     args = parser.parse_args()
 
     if len(args.input_files) != len(args.labels):
         raise ValueError("The number of input files and labels must be the same.")
 
     num_datasets = len(args.input_files)
-    fig, axs = plt.subplots(3, num_datasets, figsize=(6 * num_datasets, 15))  # Adjust figure size
+    fig_stats, axs_stats = plt.subplots(1, 2, figsize=(10, 10))  # Adjust figure size
+    fig_unique, axs_unique = plt.subplots(2, 1, figsize=(10, 10))  # Adjust figure size
+    fig_character, axs_character = plt.subplots(1, 2, figsize=(10, 10))  # Adjust figure size
 
     for i, (input_file, label) in enumerate(zip(args.input_files, args.labels)):
         # Calculate and print statistics
-        calculate_password_statistics(input_file, axs[0, i], label)
+        calculate_password_statistics(input_file, axs_stats[i], label)
 
         # Calculate and print number of unique passwords
-        calculate_unique_passwords(input_file, axs[1, i], label)
+        calculate_unique_passwords(input_file, axs_unique[i], label)
 
         # Calculate and print password characteristics
-        calculate_password_characteristics(input_file, axs[2, i], label)
-
-    plt.tight_layout(pad=4.0)  # Increase padding to prevent overlapping
+        calculate_password_characteristics(input_file, axs_character[i], label)
+    
+    plt.tight_layout(pad=8.0)
     plt.show()

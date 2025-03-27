@@ -12,6 +12,7 @@ import random
 from tqdm import trange
 
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", help="Path to PassGPT checkpoint or Huggingface name", type=str, required=True)
@@ -43,7 +44,7 @@ if __name__ == "__main__":
     
     assert not os.path.isfile(os.path.join(args.out_path, args.filename)), "The provided output path already exists, please provide a unique path."
     Path(args.out_path).mkdir(parents=True, exist_ok=True)
-    
+
     # Load tokenizer
     if args.tokenizer_path is None:
         args.tokenizer_path = args.model_path
