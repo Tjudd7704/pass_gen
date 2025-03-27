@@ -48,6 +48,7 @@ def calculate_password_statistics(input_file, ax, label):
     ax.set_xticklabels(["Very\nWeak", "Weak", "Fair", "Good", "Strong"])
     ax.set_xlabel("zxcvbn Strength Score")
     ax.set_ylabel("Number of Passwords")
+    ax.set_ylim(0, len(scores) + len(scores) * 0.05)
     ax.tick_params(axis='x', rotation=45)
     ax.set_title(f"Password Strength Distribution\n({label})", fontsize=9)
 
@@ -84,6 +85,7 @@ def calculate_password_characteristics(input_file, ax, label):
     counts = [digit_count, upper_count, special_count]
     ax.bar(categories, counts, label=label)
     ax.set_ylabel("Number of Passwords")
+    ax.set_ylim(0, len(passwords) + len(passwords) * 0.05)
     ax.tick_params(axis='x', rotation=45)
     ax.set_title(f"Character Type Distribution\n({label})", fontsize=9)
 
